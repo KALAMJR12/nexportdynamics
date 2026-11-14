@@ -69,18 +69,21 @@ In the Cloudflare dashboard:
 4. Choose **None** as the framework preset.
 5. Set **Build command** to `npm run build`.
 6. Set **Build output directory** to `dist`.
-7. Create the project. Cloudflare assigns a URL like `https://<project-name>.pages.dev`.
+7. Use the **V2 build system** if Cloudflare asks which build system to use. The repository's `wrangler.toml` configures Pages Functions and requires V2.
+8. Create the project. Cloudflare assigns a URL like `https://<project-name>.pages.dev`.
 
 Before the first build, add `PUBLIC_SITE_URL` in the Pages project's **Settings** → **Environment variables** → **Production**. Set it to the full Pages URL Cloudflare assigned, for example `https://nexport-site.pages.dev`. This ensures the canonical, Open Graph, robots, and sitemap URLs match the deployed site.
 
-## 4. Bind D1 to the Pages project
+## 4. Confirm the production configuration
 
-In the Pages project, open **Settings** → **Functions** → **D1 database bindings** and add a production binding:
+The D1 binding is already declared in the repository's `wrangler.toml`:
 
-- **Variable name:** `DB`
-- **D1 database:** `nexport_db`
+- Binding name: `DB`
+- Database: `nexport_db`
 
-Save the binding and trigger a new deployment by pushing a commit or selecting **Retry deployment**.
+When using this Wrangler configuration, treat it as the source of truth for Pages Functions settings. Confirm the deployed project uses the V2 build system and that its build command/output directory match the configuration. Do not add a separate dashboard D1 binding that conflicts with the file.
+
+After setting `PUBLIC_SITE_URL`, trigger a new deployment by pushing a commit or selecting **Retry deployment**.
 
 ## 5. Verify the deployment
 
