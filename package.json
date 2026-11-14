@@ -1,0 +1,12 @@
+{
+  "name": "nexport-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name nexport-site"
+  },
+  "devDependencies": {
+    "wrangler": "^4.162.0"
+  }
+}

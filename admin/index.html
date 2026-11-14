@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nexport Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="admin-shell">
+    <header class="admin-header">
+      <div>
+        <p class="eyebrow">Admin — internal use only</p>
+        <h1>Nexport operations</h1>
+      </div>
+      <div class="user-box">
+        <span>Signed in as</span>
+        <strong id="user-email">Loading…</strong>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Admin tabs">
+      <button class="tab is-active" data-tab="messages" type="button">Messages</button>
+      <button class="tab" data-tab="feedback" type="button">Feedback</button>
+      <button class="tab" data-tab="advisories" type="button">Advisories</button>
+    </nav>
+
+    <main>
+      <section class="panel is-active" id="panel-messages">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Service</th>
+                <th>Route</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="messages-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-feedback">
+        <form id="feedback-form" class="mini-form">
+          <h2>Add feedback</h2>
+          <div class="fields">
+            <input type="text" name="client_name" placeholder="Client name" required>
+            <input type="text" name="company" placeholder="Company">
+            <input type="text" name="service" placeholder="Service">
+            <input type="text" name="quote" placeholder="Feedback quote" required>
+            <select name="rating">
+              <option value="5">5 stars</option>
+              <option value="4">4 stars</option>
+              <option value="3">3 stars</option>
+              <option value="2">2 stars</option>
+              <option value="1">1 star</option>
+            </select>
+          </div>
+          <button type="submit">Add feedback</button>
+        </form>
+        <div id="feedback-list" class="list-stack"></div>
+      </section>
+
+      <section class="panel" id="panel-advisories">
+        <form id="advisory-form" class="mini-form">
+          <h2>Add advisory</h2>
+          <div class="fields">
+            <input type="text" name="title" placeholder="Title" required>
+            <textarea name="body" placeholder="Advisory body" required></textarea>
+            <select name="severity">
+              <option value="info">Info</option>
+              <option value="warning">Warning</option>
+              <option value="critical">Critical</option>
+            </select>
+          </div>
+          <button type="submit">Add advisory</button>
+        </form>
+        <div id="advisory-list" class="list-stack"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
