@@ -51,13 +51,23 @@ git commit -m "Configure production D1 database"
 git push
 ```
 
-Apply the schema and placeholder examples:
+From the project folder, check which migrations have already been applied to the remote database:
+
+```cmd
+npx wrangler d1 migrations list nexport_db --remote
+```
+
+Then apply all pending migrations:
 
 ```cmd
 npx wrangler d1 migrations apply nexport_db --remote
 ```
 
-The sample testimonials and advisories are published with visible `[SAMPLE]` labels as requested. They are placeholders, not verified claims or current operational advice. Replace or unpublish them before treating the site as an official source.
+Wrangler reads the numbered SQL files in `migrations` and applies any that are still pending in order: `0001_init.sql`, `0002_seed.sql`, `0003_mark_samples_unpublished.sql`, `0004_publish_sample_content.sql`, then `0005_remove_sample_labels.sql`. You do not need to run each file manually. Running the apply command again is safe; already-applied migrations are skipped.
+
+If Wrangler reports `429 Too Many Requests` for `GET /accounts`, Cloudflare is rate-limiting the account lookup before migrations are accessed. Stop retrying and wait for the limit to clear, then retry the list and apply commands. A failed migrations-list request does not apply any migrations. Avoid running the SQL manually in the dashboard, since that would not record the migration as applied.
+
+The example testimonials and advisories are published without sample labels. They are not verified customer claims or current operational advice; replace or unpublish them before treating them as genuine.
 
 ## 3. Connect GitHub to Cloudflare Pages
 
@@ -93,7 +103,7 @@ Open the Pages URL and verify the site loads. Submit a test quote and verify it 
 npx wrangler d1 execute nexport_db --remote --command "SELECT id, type, created_at FROM messages ORDER BY id DESC LIMIT 5"
 ```
 
-Public content APIs should display the visibly labeled sample feedback and notices. Replace or unpublish them when real content is ready. Admin APIs remain closed until Cloudflare Access is configured. Delete your test quote before sharing the dashboard or database output.
+Public content APIs should display the current feedback and advisories. The example content is not verified customer feedback or current operational advice, so replace or unpublish it when real content is ready. Admin APIs remain closed until Cloudflare Access is configured. Delete your test quote before sharing the dashboard or database output.
 
 ## 6. Enable the admin dashboard later (requires a domain)
 
@@ -112,5 +122,5 @@ The API also verifies the signed Access JWT itself. If the variables are missing
 ## Notes before announcing the site
 
 - Confirm that contact details, service claims, mineral grades/quantities, and public business statements are accurate.
-- Replace the `[SAMPLE]` feedback and advisories with verified, current content through the admin dashboard after Access is enabled.
+- Replace the example feedback and advisories with verified, current content through the admin dashboard after Access is enabled.
 - Use a custom domain later if you want branded URLs, Cloudflare Access for the admin, and the company's preferred search-engine canonical domain.

@@ -1,5 +1,7 @@
+
 name = "nexport-site"
 compatibility_date = "2025-01-01"
+account_id = "961d7f23141691f9316f8e38a591121e"
 pages_build_output_dir = "./dist"
 
 [[d1_databases]]

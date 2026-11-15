@@ -231,7 +231,7 @@ function renderMinerals() {
             <div class="meta"><strong>Available quantity:</strong> ${mineral.quantity}</div>
             <div class="meta"><strong>Loading port:</strong> ${mineral.port}</div>
             <div class="meta"><strong>Incoterm:</strong> ${mineral.incoterm}</div>
-            <button type="button" data-name="${mineral.name}" class="request-specs">Request specs →</button>
+            <button type="button" data-name="${mineral.name}" class="request-specs">Request specs</button>
           </article>
         `).join('')}
       </div>
@@ -258,7 +258,7 @@ function renderMinerals() {
                 <td>${mineral.quantity}</td>
                 <td>${mineral.port}</td>
                 <td>${mineral.incoterm}</td>
-                <td><button type="button" data-name="${mineral.name}" class="request-specs">Request specs →</button></td>
+                <td><button type="button" data-name="${mineral.name}" class="request-specs">Request specs</button></td>
               </tr>
             `).join('')}
           </tbody>
@@ -290,7 +290,6 @@ function setupQuoteForm() {
   const statusNode = document.getElementById('form-status');
   const successCard = document.getElementById('quote-success');
   const fallbackNote = document.getElementById('fallback-note');
-  const whatsappSuccess = document.getElementById('whatsapp-success');
   const submitAnother = document.getElementById('submit-another');
 
   if (!form) return;
@@ -372,8 +371,6 @@ function setupQuoteForm() {
 
       const data = await response.json();
       if (data.ok) {
-        const waLink = buildWhatsAppLink(summary + '\n\nReference: ' + data.id);
-        whatsappSuccess.href = waLink;
         form.hidden = true;
         successCard.hidden = false;
         fallbackNote.hidden = true;
@@ -385,7 +382,6 @@ function setupQuoteForm() {
       window.open(fallbackUrl, '_blank', 'noopener,noreferrer');
       fallbackNote.hidden = false;
       successCard.hidden = false;
-      whatsappSuccess.href = fallbackUrl;
       form.hidden = true;
       statusNode.textContent = 'We have opened WhatsApp so you can send this to our team directly.';
     }

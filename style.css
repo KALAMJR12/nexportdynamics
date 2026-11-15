@@ -168,12 +168,23 @@ nav a:hover { color: #0878d1; }
   margin: 55px auto 25px;
   display: grid;
   place-items: center;
-  font-size: 70px;
-  font-weight: 900;
   background: radial-gradient(circle at 35% 25%, #3fc0ff, #0756a5 65%, #031f4d);
   border: 1px solid #91dfff;
   box-shadow: inset -25px -20px 45px #001d49, 0 0 55px #43b9ff55;
   animation: float 4s ease-in-out infinite;
+}
+.brand-emblem {
+  display: block;
+  position: relative;
+  width: 145px;
+}
+.brand-emblem img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  filter: drop-shadow(0 2px 6px #00152fcc)
+    drop-shadow(0 0 8px #ff8a18cc)
+    drop-shadow(0 0 18px #3fc0ff99);
 }
 .card-route {
   height: 2px;
@@ -311,13 +322,19 @@ nav a:hover { color: #0878d1; }
 .ore-core {
   width: 220px;
   height: 220px;
+  position: relative;
+  z-index: 1;
   border-radius: 48% 52% 45% 55%;
-  background: radial-gradient(circle at 30% 20%, #d9eef8, #4f7890 35%, #263d48 75%, #101e24);
-  box-shadow: inset -35px -30px 55px #07161c, 0 30px 60px #0b477035;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 30% 20%, #61c5ed, #075ca8 42%, #062958 78%, #03152e);
+  border: 1px solid #6ccafa;
+  box-shadow: inset -35px -30px 55px #001735, 0 30px 60px #0b477035;
   animation: spin 8s linear infinite;
 }
 .ore-orbit {
   position: absolute;
+  z-index: 2;
   width: 390px;
   height: 150px;
   border: 2px solid #0876d255;
