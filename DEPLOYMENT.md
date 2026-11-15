@@ -34,8 +34,11 @@ npx wrangler login
 A browser window opens. Sign in and approve Wrangler. Check whether a database already exists:
 
 ```cmd
+set CLOUDFLARE_ACCOUNT_ID=YOUR_CLOUDFLARE_ACCOUNT_ID
 npx wrangler d1 list
 ```
+
+Replace the placeholder with your Cloudflare account ID. This environment variable is for Wrangler commands in this Command Prompt window; do not add `account_id` to `wrangler.toml`, because Cloudflare Pages does not support that setting.
 
 If `nexport_db` appears, set its ID as `database_id` in `wrangler.toml`. If it does not appear, create it:
 
@@ -65,7 +68,7 @@ npx wrangler d1 migrations apply nexport_db --remote
 
 Wrangler reads the numbered SQL files in `migrations` and applies any that are still pending in order: `0001_init.sql`, `0002_seed.sql`, `0003_mark_samples_unpublished.sql`, `0004_publish_sample_content.sql`, then `0005_remove_sample_labels.sql`. You do not need to run each file manually. Running the apply command again is safe; already-applied migrations are skipped.
 
-If Wrangler reports `429 Too Many Requests` for `GET /accounts`, Cloudflare is rate-limiting the account lookup before migrations are accessed. Stop retrying and wait for the limit to clear, then retry the list and apply commands. A failed migrations-list request does not apply any migrations. Avoid running the SQL manually in the dashboard, since that would not record the migration as applied.
+If Wrangler reports `429 Too Many Requests` for `GET /accounts`, confirm `CLOUDFLARE_ACCOUNT_ID` is set in the current Command Prompt window, then wait for the rate limit to clear before retrying. A failed migrations-list request does not apply any migrations. Avoid running the SQL manually in the dashboard, since that would not record the migration as applied.
 
 The example testimonials and advisories are published without sample labels. They are not verified customer claims or current operational advice; replace or unpublish them before treating them as genuine.
 
