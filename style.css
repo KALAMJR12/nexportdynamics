@@ -312,6 +312,7 @@ nav a:hover { color: #0878d1; }
   align-items: center;
   background: linear-gradient(120deg, #edf8ff, #fff);
 }
+.minerals > * { min-width: 0; }
 .ore-stage {
   height: 430px;
   position: relative;
@@ -335,7 +336,7 @@ nav a:hover { color: #0878d1; }
 .ore-orbit {
   position: absolute;
   z-index: 2;
-  width: 390px;
+  width: min(390px, 100%);
   height: 150px;
   border: 2px solid #0876d255;
   border-radius: 50%;
@@ -355,6 +356,8 @@ nav a:hover { color: #0878d1; }
 .ore-label small { color: #ff7412; }
 .ore-list-wrap {
   grid-column: 1 / -1;
+  min-width: 0;
+  max-width: 100%;
 }
 .ore-list {
   display: flex;
@@ -400,12 +403,23 @@ nav a:hover { color: #0878d1; }
 }
 .mineral-cards {
   display: flex;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   gap: 12px;
   overflow-x: auto;
+  overflow-y: hidden;
   padding-bottom: 12px;
-  scrollbar-width: thin;
+  scrollbar-width: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  touch-action: pan-x pan-y;
   position: relative;
 }
+.mineral-cards::-webkit-scrollbar { height: 6px; }
+.mineral-cards::-webkit-scrollbar-track { background: #e3eff9; border-radius: 6px; }
+.mineral-cards::-webkit-scrollbar-thumb { background: #0876d2; border-radius: 6px; }
 .mineral-cards:after {
   content: "";
   position: absolute;
@@ -415,7 +429,8 @@ nav a:hover { color: #0878d1; }
   pointer-events: none;
 }
 .mineral-card {
-  min-width: 240px;
+  flex: 0 0 min(84vw, 280px);
+  min-width: 0;
   background: white;
   border-radius: 14px;
   padding: 18px;
@@ -424,6 +439,13 @@ nav a:hover { color: #0878d1; }
   display: flex;
   flex-direction: column;
   gap: 8px;
+  scroll-snap-align: start;
+}
+.mineral-scroll-hint {
+  margin: 8px 0 0;
+  color: #5a748d;
+  font-size: 11px;
+  text-align: right;
 }
 .mineral-card h4 {
   margin: 0; color: #0d3d77; font-size: 16px;
@@ -661,12 +683,14 @@ footer img {
 @keyframes orbit { to { transform: rotate(340deg) rotateX(20deg); } }
 @media (max-width: 950px) {
   nav { display: none; }
-  .hero-copy { width: 70%; }
-  .hero-3d-card { right: 2%; transform: scale(0.78); transform-origin: top right; }
+  .hero-copy { width: 58%; }
+  .hero h1 { font-size: clamp(42px, 6.5vw, 62px); letter-spacing: -3px; }
+  .hero-3d-card { right: 2%; transform: scale(0.72); transform-origin: top right; }
   .floating-services { grid-template-columns: repeat(2, 1fr); gap: 15px; }
   .floating-services div { border: 0; }
   .service-3d-grid { grid-template-columns: 1fr 1fr; }
   .about, .minerals, .tracking, .contact { grid-template-columns: 1fr; }
+  .contact { row-gap: 32px; }
   .flow3d { grid-template-columns: 1fr 1fr; }
   .flow3d:before { display: none; }
   .feedback-grid { grid-template-columns: 1fr; }
@@ -678,10 +702,41 @@ footer img {
   header { height: 72px; padding: 0 4%; }
   .brand img { width: 190px; }
   .quote { display: none; }
-  .hero { height: 700px; }
-  .hero-copy { padding: 60px 7%; width: 100%; }
-  .hero h1 { font-size: 49px; }
-  .hero-3d-card { top: 390px; right: -35px; transform: scale(0.55); }
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(112px, 0.85fr);
+    column-gap: 8px;
+    align-items: center;
+    height: 700px;
+    min-height: 700px;
+  }
+  .hero-copy { width: auto; padding: 0 0 0 6%; }
+  .hero h1 { font-size: clamp(24px, 8vw, 36px); line-height: 0.96; letter-spacing: -1.8px; }
+  .hero-copy > p:not(.eyebrow) { font-size: clamp(11px, 3vw, 14px); line-height: 1.5; }
+  .actions { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 16px; }
+  .actions .btn { width: 100%; padding: 12px 8px; font-size: 9px; }
+  .hero-3d-card {
+    position: relative;
+    top: auto;
+    right: auto;
+    grid-column: 2;
+    justify-self: end;
+    width: min(100%, 180px);
+    height: auto;
+    aspect-ratio: 310 / 390;
+    margin: 0;
+    padding: 10px;
+    transform: none;
+  }
+  .card-label { font-size: 6px; letter-spacing: 1px; }
+  .mini-globe {
+    width: min(100%, 108px);
+    height: auto;
+    aspect-ratio: 1;
+    margin: 20px auto 12px;
+  }
+  .brand-emblem { width: 76%; }
+  .card-foot { font-size: 7px; }
   .floating-services { margin: -20px 4% 0; grid-template-columns: 1fr; }
   .section { padding: 75px 7%; }
   .section h2, .contact h2, .tracking h2 { font-size: 49px; }

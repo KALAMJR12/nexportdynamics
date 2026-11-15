@@ -67,14 +67,31 @@ function setupGlobe() {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const loader = document.getElementById('loader');
+  if (!ctx) return;
+
+  let canvasWidth = 0;
+  let canvasHeight = 0;
+  let canvasDpr = 0;
+  let canvasInView = !('IntersectionObserver' in window);
+  let frameRequest = null;
+  let lastFrameTime = 0;
 
   function resize() {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = innerWidth * dpr;
-    canvas.height = innerHeight * dpr;
-    canvas.style.width = innerWidth + 'px';
-    canvas.style.height = innerHeight + 'px';
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const bounds = canvas.getBoundingClientRect();
+    const parentHeight = canvas.parentElement ? canvas.parentElement.clientHeight : window.innerHeight;
+    canvasWidth = Math.round(bounds.width || window.innerWidth);
+    canvasHeight = Math.round(bounds.height || parentHeight || window.innerHeight);
+    const maxDpr = canvasWidth <= 600 ? 1.25 : 2;
+    const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+    const pixelWidth = Math.round(canvasWidth * dpr);
+    const pixelHeight = Math.round(canvasHeight * dpr);
+
+    if (canvas.width !== pixelWidth || canvas.height !== pixelHeight || canvasDpr !== dpr) {
+      canvas.width = pixelWidth;
+      canvas.height = pixelHeight;
+      canvasDpr = dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
   }
 
   resize();
@@ -94,7 +111,40 @@ function setupGlobe() {
   window.addEventListener('pointermove', e => {
     mouseX = (e.clientX / innerWidth - 0.5) * 2;
     mouseY = (e.clientY / innerHeight - 0.5) * 2;
+  }, { passive: true });
+
+  function stopDrawing() {
+    if (frameRequest !== null) {
+      cancelAnimationFrame(frameRequest);
+      frameRequest = null;
+    }
+  }
+
+  function scheduleDrawing() {
+    if (frameRequest === null && canvasInView && !document.hidden) {
+      frameRequest = requestAnimationFrame(draw);
+    }
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopDrawing();
+    } else {
+      scheduleDrawing();
+    }
   });
+
+  if ('IntersectionObserver' in window) {
+    const canvasObserver = new IntersectionObserver(entries => {
+      canvasInView = entries.some(entry => entry.isIntersecting);
+      if (canvasInView) {
+        scheduleDrawing();
+      } else {
+        stopDrawing();
+      }
+    });
+    canvasObserver.observe(canvas);
+  }
 
   function drawGlobe(cx, cy, r) {
     ctx.save();
@@ -149,10 +199,17 @@ function setupGlobe() {
     ctx.restore();
   }
 
-  function draw() {
-    time += 0.008;
-    const w = innerWidth;
-    const h = innerHeight;
+  function draw(timestamp) {
+    frameRequest = null;
+    if (!canvasInView || document.hidden) return;
+    if (timestamp - lastFrameTime < 33) {
+      scheduleDrawing();
+      return;
+    }
+    lastFrameTime = timestamp;
+    time += 0.016;
+    const w = canvasWidth;
+    const h = canvasHeight;
     ctx.clearRect(0, 0, w, h);
 
     const bg = ctx.createLinearGradient(0, 0, w, h);
@@ -195,10 +252,10 @@ function setupGlobe() {
       ctx.strokeStyle = '#ffffff55';
       ctx.strokeRect(x, y, 27, 15);
     }
-    requestAnimationFrame(draw);
+    scheduleDrawing();
   }
 
-  draw();
+  scheduleDrawing();
 }
 
 function setupSmoothAnchorLinks() {
@@ -215,15 +272,19 @@ function setupSmoothAnchorLinks() {
   });
 }
 
+let mobileMineralsLayout = null;
+
 function renderMinerals() {
   const wrap = document.getElementById('minerals-table-wrap');
   if (!wrap) return;
 
   const isMobile = window.matchMedia('(max-width: 950px)').matches;
+  if (isMobile === mobileMineralsLayout) return;
+  mobileMineralsLayout = isMobile;
 
   if (isMobile) {
     wrap.innerHTML = `
-      <div class="mineral-cards">
+      <div class="mineral-cards" role="region" aria-label="Mineral products" tabindex="0">
         ${MINERALS.map(mineral => `
           <article class="mineral-card">
             <h4>${mineral.name}</h4>
@@ -235,6 +296,7 @@ function renderMinerals() {
           </article>
         `).join('')}
       </div>
+      <p class="mineral-scroll-hint">Swipe horizontally to browse more minerals</p>
     `;
   } else {
     wrap.innerHTML = `
