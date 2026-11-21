@@ -62,6 +62,97 @@ function prefillFromQuery() {
   }
 }
 
+function setupHeroCarousel() {
+  const carousel = document.querySelector('[data-hero-carousel]');
+  if (!carousel) return;
+
+  const slides = Array.from(carousel.querySelectorAll('[data-hero-slide]'));
+  const previousButton = carousel.querySelector('[data-hero-prev]');
+  const nextButton = carousel.querySelector('[data-hero-next]');
+  const status = carousel.querySelector('[data-hero-carousel-status]');
+  const visibleStatus = carousel.querySelector('.hero-carousel-status');
+  if (!slides.length || !previousButton || !nextButton || !status || !visibleStatus) {
+    throw new Error('Hero carousel markup is incomplete.');
+  }
+
+  let activeIndex = slides.findIndex(slide => slide.classList.contains('is-active'));
+  if (activeIndex < 0) activeIndex = 0;
+  const rotationEnabled = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  let pointerOver = false;
+  let focusWithin = false;
+  let rotationTimer = null;
+
+  function loadHeroSlideImage(slide) {
+    const image = slide.querySelector('.hero-slide-image');
+    if (!image) throw new Error('Hero carousel slide image is missing.');
+    if (image.hasAttribute('src')) return;
+
+    const source = slide.querySelector('source[data-hero-srcset]');
+    if (source) {
+      const sourcePath = source.getAttribute('data-hero-srcset');
+      if (!sourcePath) throw new Error('Hero carousel mobile image source is missing.');
+      source.srcset = sourcePath;
+      source.removeAttribute('data-hero-srcset');
+    }
+
+    const imagePath = image.getAttribute('data-hero-src');
+    if (!imagePath) throw new Error('Hero carousel image source is missing.');
+    image.src = imagePath;
+    image.removeAttribute('data-hero-src');
+  }
+
+  function updateRotationTimer() {
+    if (rotationTimer !== null) {
+      window.clearInterval(rotationTimer);
+      rotationTimer = null;
+    }
+    const shouldRotate = rotationEnabled && !pointerOver && !focusWithin && !document.hidden && slides.length > 1;
+    status.setAttribute('aria-live', shouldRotate ? 'off' : 'polite');
+    if (shouldRotate) {
+      rotationTimer = window.setInterval(() => showSlide(activeIndex + 1), 5000);
+    }
+  }
+
+  function showSlide(index) {
+    activeIndex = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      const isActive = slideIndex === activeIndex;
+      slide.classList.toggle('is-active', isActive);
+      slide.setAttribute('aria-hidden', String(!isActive));
+      slide.inert = !isActive;
+      if (isActive) loadHeroSlideImage(slide);
+    });
+
+    const title = slides[activeIndex].getAttribute('data-slide-title') || '';
+    status.textContent = `Slide ${activeIndex + 1} of ${slides.length}: ${title}`;
+    visibleStatus.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+  }
+
+  previousButton.addEventListener('click', () => showSlide(activeIndex - 1));
+  nextButton.addEventListener('click', () => showSlide(activeIndex + 1));
+  carousel.addEventListener('mouseenter', () => {
+    pointerOver = true;
+    updateRotationTimer();
+  });
+  carousel.addEventListener('mouseleave', () => {
+    pointerOver = false;
+    updateRotationTimer();
+  });
+  carousel.addEventListener('focusin', () => {
+    focusWithin = true;
+    updateRotationTimer();
+  });
+  carousel.addEventListener('focusout', event => {
+    if (!carousel.contains(event.relatedTarget)) {
+      focusWithin = false;
+      updateRotationTimer();
+    }
+  });
+  document.addEventListener('visibilitychange', updateRotationTimer);
+  showSlide(activeIndex);
+  updateRotationTimer();
+}
+
 function setupGlobe() {
   const canvas = document.getElementById('world3d');
   if (!canvas) return;
@@ -645,6 +736,7 @@ function setupFeedbackAndAdvisories() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  setupHeroCarousel();
   setupGlobe();
   setupSmoothAnchorLinks();
   renderMinerals();
