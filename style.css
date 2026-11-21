@@ -168,23 +168,24 @@ nav a:hover { color: #0878d1; }
   margin: 55px auto 25px;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 35% 25%, #3fc0ff, #0756a5 65%, #031f4d);
+  background: #fff;
   border: 1px solid #91dfff;
-  box-shadow: inset -25px -20px 45px #001d49, 0 0 55px #43b9ff55;
+  box-shadow: 0 0 55px #43b9ff55;
   animation: float 4s ease-in-out infinite;
 }
-.brand-emblem {
+.brand-logo {
   display: block;
   position: relative;
-  width: 145px;
+  z-index: 3;
+  width: min(180px, 95%);
+  background: #fff;
 }
-.brand-emblem img {
+.brand-logo img {
   display: block;
   width: 100%;
+  height: auto;
   max-width: none;
-  filter: drop-shadow(0 2px 6px #00152fcc)
-    drop-shadow(0 0 8px #ff8a18cc)
-    drop-shadow(0 0 18px #3fc0ff99);
+  filter: none;
 }
 .card-route {
   height: 2px;
@@ -325,17 +326,17 @@ nav a:hover { color: #0878d1; }
   height: 220px;
   position: relative;
   z-index: 1;
-  border-radius: 48% 52% 45% 55%;
+  border-radius: 50%;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 30% 20%, #61c5ed, #075ca8 42%, #062958 78%, #03152e);
+  background: #fff;
   border: 1px solid #6ccafa;
-  box-shadow: inset -35px -30px 55px #001735, 0 30px 60px #0b477035;
-  animation: spin 8s linear infinite;
+  box-shadow: 0 30px 60px #0b477035;
 }
+.ore-core .brand-logo { width: min(200px, 92%); }
 .ore-orbit {
   position: absolute;
-  z-index: 2;
+  z-index: 0;
   width: min(390px, 100%);
   height: 150px;
   border: 2px solid #0876d255;
@@ -611,6 +612,11 @@ nav a:hover { color: #0878d1; }
 }
 .two-col { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
 .field-wrap { display: flex; flex-direction: column; }
+.field-hint { margin-top: 5px; color: #647d96; font-size: 10px; line-height: 1.4; }
+.phone-input-row { display: grid; grid-template-columns: minmax(125px, 0.9fr) minmax(0, 1.1fr); gap: 8px; }
+.phone-input-row select { min-width: 0; }
+.phone-input-row input { min-width: 0; }
+.phone-field { grid-column: 1 / -1; }
 label {
   font-size: 9px;
   font-weight: 800;
@@ -679,7 +685,6 @@ footer img {
 #loader img { width: 320px; }
 #loader span { font-size: 9px; letter-spacing: 2px; color: #54708e; }
 @keyframes float { 50% { transform: translateY(-12px) rotate(2deg); } }
-@keyframes spin { to { transform: rotateY(360deg); } }
 @keyframes orbit { to { transform: rotate(340deg) rotateX(20deg); } }
 @media (max-width: 950px) {
   nav { display: none; }
@@ -730,12 +735,12 @@ footer img {
   }
   .card-label { font-size: 6px; letter-spacing: 1px; }
   .mini-globe {
-    width: min(100%, 108px);
+    width: min(100%, 126px);
     height: auto;
     aspect-ratio: 1;
     margin: 20px auto 12px;
   }
-  .brand-emblem { width: 76%; }
+  .brand-logo { width: 92%; }
   .card-foot { font-size: 7px; }
   .floating-services { margin: -20px 4% 0; grid-template-columns: 1fr; }
   .section { padding: 75px 7%; }
@@ -746,4 +751,7 @@ footer img {
   .ore-core { width: 170px; height: 170px; }
   .two-col, .cbm-grid { grid-template-columns: 1fr; }
   footer { flex-direction: column; align-items: flex-start; gap: 15px; }
+}
+@media (max-width: 360px) {
+  .phone-input-row { grid-template-columns: 1fr; }
 }

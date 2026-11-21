@@ -48,7 +48,7 @@
     "sameAs": []
   }
   </script>
-  <title>Nexport Dynamics Limited | 3D Global Logistics</title>
+  <title>Nexport</title>
 </head>
 <body>
   <div id="loader">
@@ -98,8 +98,8 @@
       <div class="hero-3d-card">
         <div class="card-label">NEXPORT / GLOBAL MOVEMENT</div>
         <div class="mini-globe">
-          <span class="brand-emblem" aria-hidden="true">
-            <img src="assets/nexport-mark.png" alt="">
+          <span class="brand-logo" aria-hidden="true">
+            <img src="assets/nexport-logo.png" alt="">
           </span>
         </div>
         <div class="card-route"></div>
@@ -156,8 +156,8 @@
       <div class="ore-stage" aria-hidden="true">
         <div class="ore-orbit"></div>
         <div class="ore-core">
-          <span class="brand-emblem" aria-hidden="true">
-            <img src="assets/nexport-mark.png" alt="">
+          <span class="brand-logo" aria-hidden="true">
+            <img src="assets/nexport-logo.png" alt="">
           </span>
         </div>
         <div class="ore-label">LEAD ORE<br><small>28 MT • FOB LEKKI</small></div>
@@ -250,9 +250,15 @@
             <label for="email">Email</label>
             <input id="email" name="email" type="email" placeholder="you@example.com">
           </div>
-          <div class="field-wrap">
+          <div class="field-wrap phone-field">
             <label for="phone">Phone</label>
-            <input id="phone" name="phone" type="tel" placeholder="+234...">
+            <div class="phone-input-row">
+              <select id="phone-country-code" aria-label="Country calling code" autocomplete="tel-country-code">
+                <!-- COUNTRY_CODE_OPTIONS -->
+              </select>
+              <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="Phone number" aria-describedby="phone-hint">
+            </div>
+            <small id="phone-hint" class="field-hint">Choose your country code, then enter your number. Or paste a full international number starting with +.</small>
           </div>
         </div>
 

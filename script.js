@@ -374,6 +374,14 @@ function setupQuoteForm() {
     return '';
   };
 
+  function getInternationalPhone() {
+    const phone = document.getElementById('phone').value.trim();
+    if (!phone || phone.startsWith('+')) return phone;
+
+    const countryCode = document.getElementById('phone-country-code').selectedOptions[0].dataset.dialCode;
+    return `${countryCode} ${phone}`;
+  }
+
   const resetForm = () => {
     form.reset();
     form.hidden = false;
@@ -395,7 +403,7 @@ function setupQuoteForm() {
       name: document.getElementById('name').value.trim(),
       company: document.getElementById('company').value.trim(),
       email: document.getElementById('email').value.trim(),
-      phone: document.getElementById('phone').value.trim(),
+      phone: getInternationalPhone(),
       service: document.getElementById('service').value,
       origin: document.getElementById('origin').value.trim(),
       destination: document.getElementById('destination').value.trim(),

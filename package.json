@@ -7,6 +7,7 @@
     "deploy": "npm run build && wrangler pages deploy dist --project-name nexport-site"
   },
   "devDependencies": {
+    "country-codes-list": "^3.2.0",
     "wrangler": "^4.162.0"
   }
 }
